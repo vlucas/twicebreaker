@@ -1,0 +1,29 @@
+{
+    "name": "Twilio Icebreaker Game",
+    "authors": [
+        {
+            "name": "Vance Lucas",
+            "email": "vance@vancelucas.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "": "app/src/"
+        }
+    },
+    "require": {
+        "vlucas/bulletphp": "*",
+        "vlucas/spot": "dev-master",
+        "vlucas/valitron": "*",
+        "vlucas/phpdotenv": "*",
+        "symfony/finder": "*",
+        "raven/raven": "0.8.x"
+    },
+    "extra": {
+        "heroku": {
+            "framework": "slim",
+            "document-root": "web",
+            "index-document": "index.php"
+        }
+    }
+}

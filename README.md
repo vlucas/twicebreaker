@@ -1,5 +1,5 @@
-Twilio-Powered Icebreaker Game
-------------------------------
+Twicebreaker: Twilio-Powered Icebreaker Game
+--------------------------------------------
 
 An SMS-based game where the goal is to tag the most people you can in the
 shortest amount of time by meeting them and texting back their unique tag code.
@@ -15,4 +15,32 @@ Whoever tags the most people wins!
  4. The person who tags the most people within the time limit wins!
 
 Powered by the [Twilio](http://twilio.com) API
+
+## Installation / Setup
+
+Clone repository in git in a new folder, and then run all the steps below:
+
+### Create a .env File
+
+This project uses [phpdotenv](https://github.com/vlucas/phpdotenv), and
+requires a `.env` file with your environment configuration settings. Create a
+file named `.env` in the project root with the following:
+
+```
+DATABASE_URL='mysql://root@localhost/twilio_icebreaker'
+```
+
+Replace or add in your own MySQL credentials as needed.
+
+### Run The Migrations
+
+From the project root, run:
+
+```
+php web/index.php -u db/migrate
+```
+
+### Great Success!
+
+You should be good to go!
 
