@@ -37,6 +37,7 @@ require BULLET_APP_ROOT . '/common.php';
 // Require all paths/routes
 $routesDir = BULLET_APP_ROOT . '/routes/';
 require $routesDir . 'index.php';
+require $routesDir . 'admin.php';
 require $routesDir . 'users.php';
 require $routesDir . 'events.php';
 require $routesDir . 'taggings.php';

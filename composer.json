@@ -17,7 +17,8 @@
         "vlucas/valitron": "*",
         "vlucas/phpdotenv": "*",
         "symfony/finder": "*",
-        "raven/raven": "0.8.x"
+        "raven/raven": "0.8.x",
+        "giggsey/libphonenumber-for-php": "~5.9"
     },
     "extra": {
         "heroku": {

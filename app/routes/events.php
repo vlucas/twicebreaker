@@ -18,9 +18,9 @@ $app->resource('events', function($request) {
 
     // Create new record
     $this->post(function($request) {
-        // if(!$this['user']->isLoggedIn()) {
-        //     return 401;
-        // }
+        if(!$this['user_is_admin']) {
+            return 401;
+        }
 
         $v = new Valitron\Validator($request->post());
         $v->rule('required', ['title']);
@@ -64,11 +64,41 @@ $app->resource('events', function($request) {
 
         // UPDATE
         $this->post(function($request) use($event) {
+            if(!$this['user_is_admin']) {
+                return 401;
+            }
+
             // Currently only allows starting of event timer
             $event->started_at = new \DateTime();
             $event->ended_at = new \DateTime($event->duration);
             $this['mapper']->save($event);
             return $this->response()->redirect('/events/' . $event->id);
+        });
+
+        // Join Event
+        $this->path('join', function($request) use($event) {
+            // Join form
+            $this->get(function($request) use($event) {
+                $this->format('html', function($request) use($event) {
+                    return $this->template('events/join', compact(['event']));
+                });
+            });
+
+            // Join Event
+            $this->post(function($request) use($event) {
+                // Create new membership for user and event
+                $event = $this['mapper']->create('Entity\Event\Memberships', [
+                    'user_id'  => $this['user']->id,
+                    'event_id' => $event->id
+                ]);
+
+                $this->format('json', function() use($event) {
+                    return $this->response(201, $event->toArray());
+                });
+                $this->format('html', function() use($event) {
+                    return $this->response()->redirect('/events/' . $event->id);
+                });
+            });
         });
     });
 

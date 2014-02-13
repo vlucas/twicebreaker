@@ -1,4 +1,4 @@
-<h2>Join</h2>
+<h2>Join <?= $event->title; ?></h2>
 
 <form role="form" action="/users" method="post">
   <div class="form-group">

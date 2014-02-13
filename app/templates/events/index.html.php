@@ -4,7 +4,9 @@
   <p>No events. Make one, maybe?</p>
 <?php endif; ?>
 
-<p><a href="/events/new" class="btn btn-primary" role="button">New Event</a></p>
+<?php if(app()['user_is_admin']): ?>
+  <p><a href="/events/new" class="btn btn-primary" role="button">New Event</a></p>
+<?php endif; ?>
 
 <?php foreach($events as $event): ?>
 

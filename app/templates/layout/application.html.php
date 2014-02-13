@@ -9,6 +9,7 @@ $app = app();
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Twicebreaker</title>
   <link href="<?php echo $app->url('/assets/styles/bootstrap.min.css'); ?>" rel="stylesheet" type="text/css" />
+  <link href="<?php echo $app->url('/assets/styles/application.css'); ?>" rel="stylesheet" type="text/css" />
 </head>
 <body>
   <div class="container">
@@ -23,7 +24,7 @@ $app = app();
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Twicebreaker</a>
+          <a class="navbar-brand" href="/">Twicebreaker</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">

@@ -42,6 +42,9 @@ $app['user'] = function($app) {
     $user = new Entity\User();
     return $user;
 };
+// User admin flag
+// @see app/routes/admin.php
+$app['user_is_admin'] = isset($_SESSION['user_is_admin']) ? $_SESSION['user_is_admin'] : false;
 
 // Register helpers
 $app->helper('api', 'App\Helper\Api');

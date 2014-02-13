@@ -7,15 +7,17 @@
   <button type="submit" class="btn btn-default">Start Timer (<?= $event->duration; ?>)</button>
 </form>
 <?php elseif($event->getSecondsLeft() === 0): ?>
-<div class="well">
+<div class="well well-lg bigstat">
   Event has ended!
 </div>
+<?php if(app()['user_is_admin']): ?>
 <form role="form" action="/events/<?= $event->id ?>" method="post">
   <input type="hidden" name="status" value="start" />
   <button type="submit" class="btn btn-default">Restart Timer (<?= $event->duration; ?>)</button>
 </form>
+<?php endif; ?>
 <?php else: ?>
-<div class="well well-lg">
+<div class="well well-lg bigstat">
   <big>Time Remaining: <span id="countdownTimer"></span></big>
 </div>
 <script>
