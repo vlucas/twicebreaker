@@ -33,7 +33,7 @@ if(session_status() !== PHP_SESSION_ACTIVE && !headers_sent()) {
 // Share 'mapper' instance
 $app['mapper'] = function($app) use($request) {
     $cfg = new \Spot\Config();
-    $cfg->addConnection('mysql', $request->env('DATABASE_URL'));
+    $cfg->addConnection('mysql', str_replace('mysql2', 'mysql', $request->env('DATABASE_URL')));
     return new \Spot\Mapper($cfg);
 };
 
