@@ -23,7 +23,7 @@ if(defined('PHPUNIT_RUN')) {
 }
 
 // Load required environment variables from .env in development
-if(BULLET_ENV == 'development') {
+if(BULLET_ENV != 'production') {
     Dotenv::load(dirname(__DIR__));
 }
 Dotenv::required(['APP_URL', 'DATABASE_URL', 'TWILIO_NUMBER', 'TWILIO_SID', 'TWILIO_AUTH_TOKEN']);

@@ -103,21 +103,6 @@ $app->resource('events', function($request) {
                     return $this->template('events/join', compact(['event']));
                 });
             });
-
-            // Join Event
-            $this->post(function($request) use($event) {
-                $user = $this['mapper']->first('Entity\User', ['phone_number' => $request->post('phone_number')]);
-                if(!$user) {
-                    return $this->response()->redirect('/events/' . $event->id . '/join');
-                }
-
-                $this->format('json', function() use($event) {
-                    return $this->response(201, $event->toArray());
-                });
-                $this->format('html', function() use($event) {
-                    return $this->response()->redirect('/events/' . $event->id);
-                });
-            });
         });
     });
 
