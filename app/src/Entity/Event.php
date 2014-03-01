@@ -20,6 +20,21 @@ class Event extends App\Entity
         ];
     }
 
+    public function hasStarted()
+    {
+       return $this->started_at !== null;
+    }
+
+    public function hasEnded()
+    {
+       return !$this->hasStarted() || ($this->ended_at <= new \DateTime());
+    }
+
+    public function isActive()
+    {
+       return $this->hasStarted() && !$this->hasEnded();
+    }
+
     public function getSecondsLeft()
     {
         $seconds = 0;

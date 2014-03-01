@@ -32,8 +32,8 @@ $app->resource('smyes', function($request) {
 
                 // User not registered in system
                 if(!$user) {
-                    return $this->template('smyes/message', ['message' => 'ERROR: You are not registered to play yet! Please visit '
-                        . getenv('APP_URL') . ' to register'])
+                    return $this->template('smyes/message', ['message' => 'Ahoy! Looks like you are not registered to play yet. Please visit '
+                        . getenv('APP_URL') . ' to register.'])
                         ->format('xml')
                         ->status(400);
                 }
@@ -49,6 +49,23 @@ $app->resource('smyes', function($request) {
                 if(!$user->current_event_id) {
                     return $this->template('smyes/message', ['message' => 'ERROR: You have not joined an event yet! Check out the events here: '
                         . getenv('APP_URL') . '/events'])
+                        ->format('xml')
+                        ->status(400);
+                }
+
+                // Load event by texting user's 'current_event_id'
+                $event = $this['mapper']->get('Entity\Event', $user->current_event_id);
+
+                // Ensure event has already started
+                if(!$event->hasStarted()) {
+                    return $this->template('smyes/message', ['message' => 'ERROR: Hold your horses! Event '. $event->title . ' has not started yet.'])
+                        ->format('xml')
+                        ->status(400);
+                }
+
+                // Ensure event has not already ended
+                if($event->hasEnded()) {
+                    return $this->template('smyes/message', ['message' => 'ERROR: Rejected! Sorry chap, event '. $event->title . ' is over.'])
                         ->format('xml')
                         ->status(400);
                 }

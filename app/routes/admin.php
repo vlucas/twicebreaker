@@ -13,6 +13,7 @@ app()->path('admin', function($request) {
     $this->post(function($request) {
         if($request->post('password') === getenv('ADMIN_PASSWORD')) {
             $_SESSION['user_is_admin'] = true;
+            $this['user_is_admin'] = true;
         } else {
             return 401;
         }

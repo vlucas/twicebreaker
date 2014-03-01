@@ -15,7 +15,7 @@ class SmyesTest extends \Twicebreaker\TestBase
         ], ['Accept' => 'application/xml']);
         $response = self::$app->run($request);
         $this->assertSame(400, $response->status());
-        $this->assertContains('You are not registered', $response->content());
+        $this->assertContains('you are not registered', $response->content());
     }
 
     public function testShouldReturnErrorForInvalidTagcode()
@@ -44,6 +44,18 @@ class SmyesTest extends \Twicebreaker\TestBase
 
         // Join event
         $request = new Request('GET', 'events/1/join');
+        $response = self::$app->run($request);
+        $this->assertSame(302, $response->status()); // Redirects to /events/1
+
+        // Login as admin
+        $request = new Request('POST', 'admin', ['password' => getenv('ADMIN_PASSWORD')]);
+        $response = self::$app->run($request);
+        $this->assertSame(302, $response->status()); // Redirects to root
+
+        // Start Event
+        $request = new Request('POST', 'events/1', [
+            'status' => 'start',
+        ]);
         $response = self::$app->run($request);
         $this->assertSame(302, $response->status()); // Redirects to /events/1
 
