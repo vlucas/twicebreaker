@@ -4,31 +4,39 @@ $user = $app['user'];
 ?>
 <h2><?= $event->title ?></h2>
 <?= $event->description ?>
+<p>&nbsp;</p>
 
 <?php if(!$event->started_at): ?>
-  <form role="form" action="/events/<?= $event->id ?>" method="post">
-    <input type="hidden" name="status" value="start" />
-    <button type="submit" class="btn btn-default">Start Timer (<?= $event->duration; ?>)</button>
-  </form>
+  <div class="well well-lg">
+    This event has not started yet.
+    <?php if($app['user_is_admin']): ?>
+    <form role="form" action="/events/<?= $event->id ?>" method="post">
+      <input type="hidden" name="status" value="start" />
+      <button type="submit" class="btn btn-default">Start Timer (<?= $event->duration; ?>)</button>
+    </form>
+    <?php endif; ?>
+  </div>
 
-  <?php if($user->current_event_id != $event->id): ?>
   <br />
-  <form role="form" action="/events/<?= $event->id ?>/join" method="post">
-  <input type="hidden" name="phone_number" value="<?= $user->phone_number; ?>" />
-    <button type="submit" class="btn btn-default">Join Event</button>
-  </form>
+  <?php if($user->current_event_id === $event->id): ?>
+    <p><strong>You have joined this event!</strong></p>
+    <!-- Probably display leaderboard here -->
+  <?php else: ?>
+    <form role="form" action="/events/<?= $event->id ?>/join" method="post">
+    <input type="hidden" name="phone_number" value="<?= $user->phone_number; ?>" />
+      <button type="submit" class="btn btn-default">Join Event</button>
+    </form>
   <?php endif; ?>
 <?php elseif($event->getSecondsLeft() === 0): ?>
   <div class="well well-lg bigstat">
     Event has ended!
+    <?php if($app['user_is_admin']): ?>
+    <form role="form" action="/events/<?= $event->id ?>" method="post">
+      <input type="hidden" name="status" value="start" />
+      <button type="submit" class="btn btn-default">Restart Timer (<?= $event->duration; ?>)</button>
+    </form>
+    <?php endif; ?>
   </div>
-
-  <?php if($app['user_is_admin']): ?>
-  <form role="form" action="/events/<?= $event->id ?>" method="post">
-    <input type="hidden" name="status" value="start" />
-    <button type="submit" class="btn btn-default">Restart Timer (<?= $event->duration; ?>)</button>
-  </form>
-  <?php endif; ?>
 <?php else: ?>
 <div class="well well-lg bigstat">
   <big>Time Remaining: <span id="countdownTimer"></span></big>

@@ -80,6 +80,15 @@ $app->resource('events', function($request) {
         $this->path('join', function($request) use($event) {
             // Join form
             $this->get(function($request) use($event) {
+                $user = $this['user'];
+                if($user->isLoggedIn()) {
+                    // Update 'current_event_id' for user
+                    $user->current_event_id = $event->id;
+                    $this['mapper']->save($user);
+                    Flash::message('flash', 'Joined event ' . $event->title);
+                    return $this->response()->redirect('/events/' . $event->id);
+                }
+
                 $this->format('html', function($request) use($event) {
                     return $this->template('events/join', compact(['event']));
                 });
@@ -91,29 +100,6 @@ $app->resource('events', function($request) {
                 if(!$user) {
                     return $this->response()->redirect('/events/' . $event->id . '/join');
                 }
-
-                // Update 'current_event_id' for user
-                $this['user']->current_event_id = $event->id;
-                $this['mapper']->save($this['user']);
-
-                $this->format('json', function() use($event) {
-                    return $this->response(201, $event->toArray());
-                });
-                $this->format('html', function() use($event) {
-                    return $this->response()->redirect('/events/' . $event->id);
-                });
-            });
-        });
-
-        // Tag user at event
-        $this->path('taguser', function($request) use($event) {
-            $this->post(function($request) use($event) {
-                // Create new membership for user and event
-                $event = $this['mapper']->create('Entity\Event\Tagging', [
-                    'user_id'  => $this['user']->id,
-                    'event_id' => $event->id,
-                    'tagcode'  => $tagcode
-                ]);
 
                 $this->format('json', function() use($event) {
                     return $this->response(201, $event->toArray());

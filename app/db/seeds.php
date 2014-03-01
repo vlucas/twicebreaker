@@ -31,9 +31,10 @@ $users = array(array(
     'phone_number' => '555-555-1212',
     'tagcode'      => 'TES'
 ), array(
-    'name'         => 'Testy McTesterpants',
-    'phone_number' => '555-555-1313',
-    'tagcode'      => 'MCT'
+    'name'             => 'Testy McTesterpants',
+    'phone_number'     => '555-555-1313',
+    'tagcode'          => 'MCT',
+    'current_event_id' => 1
 ));
 foreach($users as $i => $data) {
     $user = new \Entity\User($data);

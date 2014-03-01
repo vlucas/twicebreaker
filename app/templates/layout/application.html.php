@@ -47,6 +47,17 @@ $app = app();
       </div>
 
       <div id="content" class="bBox">
+        <?php
+        $flashMessages = Joelvardy\Flash::message('flash');
+        if(!empty($flashMessages)):
+        ?>
+        <div class="alert alert-success">
+          <?php foreach($flashMessages as $fieldMessages): ?>
+            <li><?php echo implode("</li>\n</li>", $fieldMessages); ?></li>
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
         <?php if(!empty($errors)): ?>
         <div class="alert alert-danger">
           <?php foreach($errors as $field => $fieldErrors): ?>

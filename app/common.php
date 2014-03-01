@@ -41,7 +41,11 @@ $app['mapper'] = function($app) use($request) {
 $app['user'] = function($app) {
     $user = false;
     if(isset($_SESSION['user'])) {
-
+        $user = $app['mapper']->first('Entity\User', [
+            'id'           => isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 0,
+            'phone_number' => isset($_SESSION['user']['phone_number']) ? $_SESSION['user']['phone_number'] : 0,
+            'tagcode'      => isset($_SESSION['user']['tagcode']) ? $_SESSION['user']['tagcode'] : 0,
+        ]);
     }
 
     // Always ensure a user object is returned
@@ -116,6 +120,14 @@ $app->on(404, function(\Bullet\Request $request, \Bullet\Response $response) use
         $response->content($app->template('errors/404')->content());
     }
 });
+
+// Phone number format
+function phoneNumberFormat($phone) {
+    $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+    $parsed = $phoneUtil->parse($phone, "US");
+    $phoneNumber = $phoneUtil->format($parsed, \libphonenumber\PhoneNumberFormat::E164);
+    return $phoneNumber;
+}
 
 // Super-simple language translation by key => value array
 function t($string) {

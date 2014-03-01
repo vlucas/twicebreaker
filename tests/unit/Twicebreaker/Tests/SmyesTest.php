@@ -34,10 +34,18 @@ class SmyesTest extends \Twicebreaker\TestBase
 
     public function testShouldTagWithTwilioRequest()
     {
-        // Join event
-        $request = new Request('POST', 'events/1/join', ['tagcode' => 'ABC']);
+        // Login as user
+        $request = new Request('POST', 'users', [
+            'name' => 'Vance Lucas',
+            'phone_number' => '555-555-1212'
+        ]);
         $response = self::$app->run($request);
-        $this->assertSame(302, $response->status()); // Redirects to user
+        $this->assertSame(302, $response->status()); // Redirects to root
+
+        // Join event
+        $request = new Request('GET', 'events/1/join');
+        $response = self::$app->run($request);
+        $this->assertSame(302, $response->status()); // Redirects to /events/1
 
         // Tag user
         $request = new Request('POST', '/smyes', [
@@ -48,9 +56,19 @@ class SmyesTest extends \Twicebreaker\TestBase
             'Body' => 'MCT'                   // Testy McTesterpants's tagcode
         ], ['Accept' => 'application/xml']);
         $response = self::$app->run($request);
-        var_dump($response->content());
-        $this->assertSame(200, $response->status());
-        $this->assertContains(self::$app['sms']['tag_success_messages'], $response->content());
+        $this->assertSame(201, $response->status());
+
+        // Tag user again, expect error
+        $request = new Request('POST', '/smyes', [
+            'MessageSid' => '123abc',
+            'AccountSid' => getenv('TWILIO_SID'),
+            'From' => '+15555551212',         // Chester Tester
+            'To' => getenv('TWILIO_NUMBER'),  // Your Twilio Number
+            'Body' => 'MCT'                   // Testy McTesterpants's tagcode
+        ], ['Accept' => 'application/xml']);
+        $response = self::$app->run($request);
+        $this->assertSame(400, $response->status());
+        $this->assertContains('You already tagged', $response->content());
     }
 }
 

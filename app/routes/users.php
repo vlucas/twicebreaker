@@ -11,20 +11,22 @@ $app->resource('users', function($request) {
         $v = new \Valitron\Validator($request->post());
         $v->rule('required', ['name', 'phone_number']);
         if($v->validate()) {
+            $phoneNumber = phoneNumberFormat($request->post('phone_number'));
+
             // Create new user
             $user = $this['mapper']->upsert('Entity\User', [
                 'name'         => $request->post('name'),
-                'phone_number' => $request->post('phone_number')
+                'phone_number' => $phoneNumber
             ], [
-                'phone_number' => $request->post('phone_number')
+                'phone_number' => $phoneNumber
             ]);
             if($user) {
                 // Use id, number, and tagcode to store in session
-                $_SESSION['user'] = json_encode([
+                $_SESSION['user'] = [
                     'id'           => $user->id,
                     'phone_number' => $user->phone_number,
                     'tagcode'      => $user->tagcode
-                ]);
+                ];
             }
 
             $this->format('json', function($request) use($user) {
@@ -44,3 +46,13 @@ $app->resource('users', function($request) {
         }
     });
 });
+
+$app->path('logout', function($request) {
+    $this->get(function($request) {
+        if(isset($_SESSION['user'])) {
+            unset($_SESSION['user']);
+        }
+        return $this->response()->redirect('/');
+    });
+});
+

@@ -61,12 +61,22 @@ $app->resource('smyes', function($request) {
                 }
 
                 // Create new tagging
-                $tagging = $this['mapper']->create('Entity\Event\Tagging', [
+                $tagging = $this['mapper']->build('Entity\Event\Tagging', [
                     'user_id'        => $user->id,
                     'tagged_user_id' => $tagged_user->id,
                     'event_id'       => $user->current_event_id,
                     'tagcode'        => $tagcode
                 ]);
+                $result = $this['mapper']->insert($tagging);
+
+                // Lame attempt at multiple taggings of the same user
+                if(!$result) {
+                    if(count($tagging->errors('user_event_tag') > 0)) {
+                        return $this->template('smyes/message', ['message' => 'Get a life. You already tagged ' . $tagged_user->name . '.'])
+                            ->format('xml')
+                            ->status(400);
+                    }
+                }
 
                 $msg = $this['sms']['tag_success_messages'][array_rand($this['sms']['tag_success_messages'])];
                 return $this->template('smyes/message', ['message' => $msg])
