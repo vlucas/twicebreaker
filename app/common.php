@@ -58,6 +58,11 @@ $app['user'] = function($app) {
 // @see app/routes/admin.php
 $app['user_is_admin'] = isset($_SESSION['user_is_admin']) ? $_SESSION['user_is_admin'] : false;
 
+// Share 'twilio' instance
+$app['twilio'] = function($app) use($request) {
+    return new Services_Twilio($request->env('TWILIO_SID'), $request->env('TWILIO_AUTH_TOKEN'));
+};
+
 // Register helpers
 $app->helper('api', 'App\Helper\Api');
 $app->helper('date', 'App\Helper\Date');

@@ -19,7 +19,8 @@
         "symfony/finder": "*",
         "raven/raven": "0.8.x",
         "giggsey/libphonenumber-for-php": "~5.9",
-        "joelvardy/flash": "dev-master"
+        "joelvardy/flash": "dev-master",
+        "twilio/sdk": "3.12.*"
     },
     "extra": {
         "heroku": {

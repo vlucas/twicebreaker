@@ -85,6 +85,16 @@ $app->resource('events', function($request) {
                     // Update 'current_event_id' for user
                     $user->current_event_id = $event->id;
                     $this['mapper']->save($user);
+
+                    // Send text with user tagcode
+                    if(BULLET_ENV !== 'testing') {
+                        $message = $client->account->messages->sendMessage(
+                            $request->env('TWILIO_NUMBER'), // From a valid Twilio number
+                            $user->phone_number, // Text this number
+                            "You joined the event '" . $event->title . "'. Your tagcode is " . $user->tagcode
+                        );
+                    }
+
                     Flash::message('flash', 'Joined event ' . $event->title);
                     return $this->response()->redirect('/events/' . $event->id);
                 }
