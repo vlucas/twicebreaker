@@ -47,13 +47,14 @@ $app = app();
       </div>
 
       <div id="content" class="bBox">
-        <?php if(isset($errors)): ?>
+        <?php if(!empty($errors)): ?>
         <div class="alert alert-danger">
           <?php foreach($errors as $field => $fieldErrors): ?>
-            <li><?= implode("</li>\n</li>", $fieldErrors); ?></li>
+            <li><?php echo implode("</li>\n</li>", $fieldErrors); ?></li>
           <?php endforeach; ?>
         </div>
         <?php endif; ?>
+
         <?php echo $yield; ?>
       </div>
     </div>

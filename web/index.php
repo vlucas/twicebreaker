@@ -26,7 +26,7 @@ if(defined('PHPUNIT_RUN')) {
 if(BULLET_ENV == 'development') {
     Dotenv::load(dirname(__DIR__));
 }
-Dotenv::required(['DATABASE_URL', 'TWILIO_SID', 'TWILIO_AUTH_TOKEN']);
+Dotenv::required(['APP_URL', 'DATABASE_URL', 'TWILIO_NUMBER', 'TWILIO_SID', 'TWILIO_AUTH_TOKEN']);
 
 // Bullet App
 $app = new Bullet\App(require BULLET_APP_ROOT . 'config.php');
@@ -41,6 +41,7 @@ require $routesDir . 'admin.php';
 require $routesDir . 'users.php';
 require $routesDir . 'events.php';
 require $routesDir . 'taggings.php';
+require $routesDir . 'smyes.php';
 
 // CLI routes
 if($request->isCli()) {

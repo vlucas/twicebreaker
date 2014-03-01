@@ -1,5 +1,6 @@
 <?php
 use Entity\Event;
+use Joelvardy\Flash as Flash;
 
 $app->resource('events', function($request) {
     // Index
@@ -58,7 +59,7 @@ $app->resource('events', function($request) {
         // VIEW
         $this->get(function($request) use($event) {
             $this->format('html', function($request) use($event) {
-                return $this->template('events/view', compact(['event']));
+                return $this->template('events/view', ['event' => $event, 'errors' => Flash::message('error')]);
             });
         });
 
@@ -86,10 +87,32 @@ $app->resource('events', function($request) {
 
             // Join Event
             $this->post(function($request) use($event) {
+                $user = $this['mapper']->first('Entity\User', ['phone_number' => $request->post('phone_number')]);
+                if(!$user) {
+                    return $this->response()->redirect('/events/' . $event->id . '/join');
+                }
+
+                // Update 'current_event_id' for user
+                $this['user']->current_event_id = $event->id;
+                $this['mapper']->save($this['user']);
+
+                $this->format('json', function() use($event) {
+                    return $this->response(201, $event->toArray());
+                });
+                $this->format('html', function() use($event) {
+                    return $this->response()->redirect('/events/' . $event->id);
+                });
+            });
+        });
+
+        // Tag user at event
+        $this->path('taguser', function($request) use($event) {
+            $this->post(function($request) use($event) {
                 // Create new membership for user and event
-                $event = $this['mapper']->create('Entity\Event\Memberships', [
+                $event = $this['mapper']->create('Entity\Event\Tagging', [
                     'user_id'  => $this['user']->id,
-                    'event_id' => $event->id
+                    'event_id' => $event->id,
+                    'tagcode'  => $tagcode
                 ]);
 
                 $this->format('json', function() use($event) {

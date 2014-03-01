@@ -2,7 +2,7 @@
 namespace Entity\Event;
 use App;
 
-class Taggings extends App\Entity
+class Tagging extends App\Entity
 {
     protected static $_datasource = 'event_taggings';
 

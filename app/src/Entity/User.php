@@ -17,6 +17,7 @@ class User extends Spot\Entity
             'name' => array('type' => 'string', 'required' => true),
             'phone_number' => array('type' => 'string', 'required' => true, 'unique' => true),
             'tagcode' => array('type' => 'string', 'required' => true, 'unique' => true),
+            'current_event_id' => array('type' => 'int'),
             'date_created' => array('type' => 'datetime', 'default' => new \DateTime())
         ) + parent::fields();
     }
@@ -27,14 +28,32 @@ class User extends Spot\Entity
     public static function hooks()
     {
         return [
-            'beforeInsert' => ['hookGenerateTagcode']
+            'beforeInsert' => ['hookVerifyPhoneNumber', 'hookGenerateTagcode']
         ];
+    }
+
+    /**
+     * Verify and store phone number in E-164 format
+     */
+    public function hookVerifyPhoneNumber(\Spot\Mapper $mapper)
+    {
+        // Ensure phone number is stored in correct format
+        $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+        try {
+            $parsed = $phoneUtil->parse($this->phone_number, "US");
+        } catch (\libphonenumber\NumberParseException $e) {
+            $this->error('phone_number', 'Invalid phone number format');
+            return;
+        }
+
+        $phone_number = $phoneUtil->format($parsed, \libphonenumber\PhoneNumberFormat::E164);
+        $this->phone_number = $phone_number;
     }
 
     /**
      * Generate tagcode for user
      */
-    public function hookGenerateTagcode($entity)
+    public function hookGenerateTagcode(\Spot\Mapper $mapper)
     {
         if($this->tagcode !== null) { return; }
 

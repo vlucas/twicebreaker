@@ -39,7 +39,15 @@ $app['mapper'] = function($app) use($request) {
 
 // Share 'user' instance
 $app['user'] = function($app) {
-    $user = new Entity\User();
+    $user = false;
+    if(isset($_SESSION['user'])) {
+
+    }
+
+    // Always ensure a user object is returned
+    if(!$user) {
+        $user = new Entity\User();
+    }
     return $user;
 };
 // User admin flag
@@ -52,6 +60,7 @@ $app->helper('date', 'App\Helper\Date');
 $app->helper('form', 'App\Helper\Form');
 
 // Shortcut to access $app instance anywhere
+$GLOBALS['app'] = $app;
 function app() {
     return $GLOBALS['app'];
 }
@@ -66,7 +75,7 @@ function app() {
 
 // Display exceptions with error and 500 status
 $app->on('Exception', function(\Bullet\Request $request, \Bullet\Response $response, \Exception $e) use($app) {
-    if($request->format() === 'json') {
+    if($request->format() === 'json' || $request->isCli()) {
         $data = array(
             'error' => str_replace('Exception', '', get_class($e)),
             'message' => $e->getMessage()
@@ -76,10 +85,14 @@ $app->on('Exception', function(\Bullet\Request $request, \Bullet\Response $respo
         if(BULLET_ENV !== 'production') {
             $data['file'] = $e->getFile();
             $data['line'] = $e->getLine();
-            $data['trace'] = $e->getTrace();
+            $data['trace'] = explode("\n", $e->getTraceAsString());
         }
 
-        $response->content($data);
+        if($request->isCli()) {
+            $response->content(print_r($data, true));
+        } else {
+            $response->content($data);
+        }
     } else {
         $response->content($app->template('errors/exception', array('e' => $e))->content());
     }
