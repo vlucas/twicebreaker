@@ -20,6 +20,37 @@ class Event extends App\Entity
         ];
     }
 
+    public static function relations()
+    {
+        return [
+            'participants' => [
+                'type' => 'HasMany',
+                'entity' => 'Entity\User',
+                'where' => ['current_event_id' => ':entity.id']
+            ],
+            'taggings' => [
+                'type' => 'HasMany',
+                'entity' => 'Entity\Event\Tagging',
+                'where' => ['event_id' => ':entity.id']
+            ]
+        ];
+    }
+
+    /**
+     * Get users and tagging stats to display on leaderboard
+     */
+    public function getLeaderboardStats()
+    {
+        return app()['mapper']->query('Entity\User', "
+            SELECT u.*, COUNT(et.user_id) AS tagcount
+            FROM users AS u
+            LEFT JOIN event_taggings AS et ON(u.id = et.user_id)
+            WHERE u.current_event_id = ?
+            GROUP BY u.id
+            ORDER BY tagcount DESC, u.date_created ASC
+        ", [$this->id]);
+    }
+
     public function hasStarted()
     {
        return $this->started_at !== null;

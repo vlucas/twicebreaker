@@ -58,8 +58,15 @@ $app->resource('events', function($request) {
 
         // VIEW
         $this->get(function($request) use($event) {
-            $this->format('html', function($request) use($event) {
-                return $this->template('events/view', ['event' => $event, 'errors' => Flash::message('error')]);
+            $data = [
+                'event'            => $event,
+                'leaderboard'      => $event->getLeaderboardStats(),
+                'participantCount' => $event->participants->count(),
+                'errors'           => Flash::message('error')
+            ];
+
+            $this->format('html', function($request) use($data) {
+                return $this->template('events/view', $data);
             });
         });
 
@@ -88,10 +95,10 @@ $app->resource('events', function($request) {
 
                     // Send text with user tagcode
                     if(BULLET_ENV !== 'testing') {
-                        $message = $client->account->messages->sendMessage(
+                        $message = $this['twilio']->account->messages->sendMessage(
                             $request->env('TWILIO_NUMBER'), // From a valid Twilio number
                             $user->phone_number, // Text this number
-                            "You joined the event '" . $event->title . "'. Your tagcode is " . $user->tagcode
+                            "You joined the event '" . $event->title . "'. \nYour tagcode is: " . $user->tagcode
                         );
                     }
 

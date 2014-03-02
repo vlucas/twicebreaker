@@ -406,12 +406,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/Spot.git",
-                "reference": "933ae2f2bd909a708cb38beaa721dcdb106bebfe"
+                "reference": "5641a513b8765100da1de47ef7e7fd031de7b9d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/Spot/zipball/933ae2f2bd909a708cb38beaa721dcdb106bebfe",
-                "reference": "933ae2f2bd909a708cb38beaa721dcdb106bebfe",
+                "url": "https://api.github.com/repos/vlucas/Spot/zipball/5641a513b8765100da1de47ef7e7fd031de7b9d1",
+                "reference": "5641a513b8765100da1de47ef7e7fd031de7b9d1",
                 "shasum": ""
             },
             "require": {
@@ -446,7 +446,7 @@
                 "mysql",
                 "orm"
             ],
-            "time": "2014-02-09 05:46:44"
+            "time": "2014-03-02 04:56:27"
         },
         {
             "name": "vlucas/valitron",

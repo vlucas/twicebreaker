@@ -31,6 +31,11 @@ $app = app();
             <li class="active"><a href="/">Home</a></li>
             <li><a href="/events">Events</a></li>
           </ul>
+          <?php if($app['user']->isLoggedIn()): ?>
+          <ul class="nav navbar-nav navbar-right">
+          <li><a href="#"><?= $app['user']->name; ?></a></li>
+          </ul>
+          <?php endif; ?>
         </div><!--/.nav-collapse -->
       </div>
     </div>
