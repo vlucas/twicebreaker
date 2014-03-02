@@ -65,6 +65,13 @@ $user = $app['user'];
         if(secs !== -1) setTimeout('Countdown()',1000);
       }
     </script>
+    <script>
+      var refreshTimeout = 10000;
+      function refresh() {
+         window.location.reload(true);
+      }
+      setTimeout(refresh, refreshTimeout);
+    </script>
   <?php endif; ?>
 
   <div class="panel panel-default">
@@ -72,7 +79,7 @@ $user = $app['user'];
       <h3 class="panel-title">Leaderboard (<?= $participantCount; ?> participants)</h3>
     </div>
     <div class="panel-body">
-      <table class="table table-striped">
+      <table class="table table-striped" id="leaderboard">
         <thead>
         <tr>
           <th>User</th>
